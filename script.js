@@ -3,8 +3,8 @@
    See the setup notes at the bottom of index.html (search "SETUP").
    ========================================================================= */
 const ENV = (typeof window !== "undefined" && window.ENV) || {};
-const API_URL = ENV.APPS_SCRIPT_URL || "";
-const SHEET_ID = ENV.SHEET_ID || "";
+const API_URL = ENV.APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbx2REIzbMFxyUo2mKWT2aR05CcYiAdnvkAVj7LsMzUpSovXtaB2ZaLRBUCcTBs47zZKdg/exec";
+const SHEET_ID = ENV.SHEET_ID || "1c3uAn4RjBmZqIPK-iGj5jMRO07O86mud42-DshQ6tos";
 
 const CRITERIA = [
     { key: "correctness", label: "Occasion-appropriateness", hint: "Does this match what someone would actually wear for this occasion in India?" },
