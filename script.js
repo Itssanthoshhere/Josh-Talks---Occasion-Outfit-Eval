@@ -94,6 +94,9 @@ let STATE = {
     draft: {},
     winner: null,
     sessionRatings: [],
+    showPasscodeModal: false,
+    passcodeError: "",
+    passcodeCallback: null,
 };
 
 async function apiGet() {
@@ -169,10 +172,14 @@ function render() {
     else if (STATE.view === "thanks") body = thanksHtml();
     else if (STATE.view === "dashboard") body = dashboardHtml();
 
-    app.innerHTML = headerHtml(STATE.view !== "home") + bannerHtml() + body;
+    app.innerHTML = headerHtml(STATE.view !== "home") + bannerHtml() + body + passcodeModalHtml();
 
     if (STATE.view === "rate") checkRateReady();
     if (STATE.view === "consent") updateConsentButton();
+    if (STATE.showPasscodeModal) {
+        const input = document.getElementById("passcodeInput");
+        if (input) input.focus();
+    }
 }
 
 /* ---------- HOME ---------- */
@@ -192,20 +199,64 @@ function homeHtml() {
     </div>
     <p class="footer-note">Ratings and consent details are stored for this evaluation and are visible to anyone with the admin/backend link.</p>`;
 }
-const ADMIN_PASSCODE = (ENV && ENV.ADMIN_PASSCODE) || "1234";
+const ADMIN_PASSCODE = (ENV && ENV.ADMIN_PASSCODE) || "sandy";
 
-function checkAdminPasscode() {
-    const code = prompt("Admin Passcode required:");
-    if (code === ADMIN_PASSCODE) return true;
-    if (code !== null) alert("Incorrect passcode. Access denied.");
-    return false;
+function openPasscodeModal(callback) {
+    STATE.showPasscodeModal = true;
+    STATE.passcodeError = "";
+    STATE.passcodeCallback = callback;
+    render();
+}
+
+function closePasscodeModal() {
+    STATE.showPasscodeModal = false;
+    STATE.passcodeError = "";
+    STATE.passcodeCallback = null;
+    render();
+}
+
+function submitPasscodeModal(e) {
+    if (e) e.preventDefault();
+    const input = document.getElementById("passcodeInput");
+    const val = input ? input.value.trim() : "";
+    if (val === ADMIN_PASSCODE) {
+        const cb = STATE.passcodeCallback;
+        STATE.showPasscodeModal = false;
+        STATE.passcodeError = "";
+        STATE.passcodeCallback = null;
+        render();
+        if (cb) cb();
+    } else {
+        STATE.passcodeError = "Incorrect admin passcode. Access denied.";
+        render();
+    }
+}
+
+function passcodeModalHtml() {
+    if (!STATE.showPasscodeModal) return "";
+    return `
+    <div class="modal-overlay" onclick="if(event.target===this) closePasscodeModal()">
+      <div class="modal-card">
+        <h3 style="font-family:'Bitter',serif; font-weight:700; font-size:18px; margin:0 0 8px; color:var(--ink);">Admin Authorization</h3>
+        <p style="font-size:13.5px; margin-bottom:14px; color:rgba(36,28,20,0.8); line-height:1.4;">Enter the Admin Passcode to proceed:</p>
+        <form onsubmit="submitPasscodeModal(event)">
+          <input type="password" id="passcodeInput" class="input" placeholder="Admin passcode" autofocus style="margin-bottom:10px;" />
+          ${STATE.passcodeError ? `<div style="color:var(--rust); font-size:13px; font-weight:600; margin-bottom:10px;">${escapeHtml(STATE.passcodeError)}</div>` : ""}
+          <div class="row" style="justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button type="button" class="btn btn-ghost-dark" onclick="closePasscodeModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Authorize</button>
+          </div>
+        </form>
+      </div>
+    </div>`;
 }
 
 function goHome() { STATE.view = "home"; render(); }
 function goAdmin() {
-    if (!checkAdminPasscode()) return;
-    STATE.view = "admin";
-    render();
+    openPasscodeModal(() => {
+        STATE.view = "admin";
+        render();
+    });
 }
 function goDashboard() { STATE.view = "dashboard"; render(); }
 
@@ -546,17 +597,18 @@ function dashboardHtml() {
     return html;
 }
 async function doResetRatings() {
-    if (!checkAdminPasscode()) return;
-    if (!confirm("Clear all " + STATE.ratings.length + " ratings? This can't be undone.")) return;
-    STATE.ratings = [];
-    if (STATE.configured) {
-        try {
-            await apiPost({ action: "resetRatings" });
-            STATE.error = "";
+    openPasscodeModal(async () => {
+        if (!confirm("Clear all " + STATE.ratings.length + " ratings? This can't be undone.")) return;
+        STATE.ratings = [];
+        if (STATE.configured) {
+            try {
+                await apiPost({ action: "resetRatings" });
+                STATE.error = "";
+            }
+            catch (e) { STATE.error = "Reset failed on the backend — local view cleared only."; }
         }
-        catch (e) { STATE.error = "Reset failed on the backend — local view cleared only."; }
-    }
-    render();
+        render();
+    });
 }
 
 loadData();
