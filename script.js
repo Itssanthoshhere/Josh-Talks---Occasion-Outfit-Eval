@@ -192,8 +192,21 @@ function homeHtml() {
     </div>
     <p class="footer-note">Ratings and consent details are stored for this evaluation and are visible to anyone with the admin/backend link.</p>`;
 }
+const ADMIN_PASSCODE = (ENV && ENV.ADMIN_PASSCODE) || "1234";
+
+function checkAdminPasscode() {
+    const code = prompt("Admin Passcode required:");
+    if (code === ADMIN_PASSCODE) return true;
+    if (code !== null) alert("Incorrect passcode. Access denied.");
+    return false;
+}
+
 function goHome() { STATE.view = "home"; render(); }
-function goAdmin() { STATE.view = "admin"; render(); }
+function goAdmin() {
+    if (!checkAdminPasscode()) return;
+    STATE.view = "admin";
+    render();
+}
 function goDashboard() { STATE.view = "dashboard"; render(); }
 
 /* ---------- ADMIN ---------- */
@@ -531,6 +544,7 @@ function dashboardHtml() {
     return html;
 }
 async function doResetRatings() {
+    if (!checkAdminPasscode()) return;
     if (!confirm("Clear all " + STATE.ratings.length + " ratings? This can't be undone.")) return;
     STATE.ratings = [];
     if (STATE.configured) {

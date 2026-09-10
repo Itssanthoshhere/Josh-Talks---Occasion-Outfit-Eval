@@ -5,7 +5,8 @@ export default function handler(req, res) {
     
     const config = {
         SHEET_ID: process.env.SHEET_ID || "",
-        APPS_SCRIPT_URL: process.env.APPS_SCRIPT_URL || ""
+        APPS_SCRIPT_URL: process.env.APPS_SCRIPT_URL || "",
+        ADMIN_PASSCODE: process.env.ADMIN_PASSCODE || "1234"
     };
 
     res.status(200).send(`window.ENV = ${JSON.stringify(config)};`);
