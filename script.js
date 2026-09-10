@@ -2,7 +2,8 @@
    CONFIG — paste your deployed Google Apps Script Web App URL below.
    See the setup notes at the bottom of index.html (search "SETUP").
    ========================================================================= */
-const API_URL = "https://script.google.com/macros/s/AKfycbyDGC_XpTY0sLDvUjaKxiDVbD-X3jk7-BdN-ZLtd7j7sjc0WT-9i5Z8S3yZpU_zpWOEPg/exec";
+const API_URL = (typeof window !== "undefined" && window.ENV && window.ENV.APPS_SCRIPT_URL) ? window.ENV.APPS_SCRIPT_URL : "";
+const SHEET_ID = (typeof window !== "undefined" && window.ENV && window.ENV.SHEET_ID) ? window.ENV.SHEET_ID : "";
 
 const CRITERIA = [
     { key: "correctness", label: "Occasion-appropriateness", hint: "Does this match what someone would actually wear for this occasion in India?" },
