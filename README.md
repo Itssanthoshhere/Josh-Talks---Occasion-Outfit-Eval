@@ -3,9 +3,11 @@
 > **Evaluating AI-Generated E-Commerce Listings for the Indian Festive Market**  
 > *Josh Talks — AI Product Operations Intern Task Submission*
 
+<div align="center">
 <a href="https://josh-talks-occasion-outfit-eval.vercel.app/" target="_blank">
   <img src="https://img.shields.io/badge/🚀_Live_Demo-Visit_Web_App-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
 </a>
+</div>
 
 ---
 
