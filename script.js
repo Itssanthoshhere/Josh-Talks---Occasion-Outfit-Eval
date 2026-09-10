@@ -243,10 +243,13 @@ function adminHtml() {
         html += `</div></div>`;
     });
 
-    html += `<div class="row">
-    <button class="btn btn-primary" onclick="saveAdminConfig()">Save setup</button>
-    <span id="savedFlash" class="muted" style="display:none; color:var(--mustard);">Saved.</span>
-    <button class="btn btn-ghost-dark" onclick="goHome()">Done</button>
+    html += `<div class="row" style="justify-content:space-between; margin-top:20px;">
+    <div class="row">
+      <button class="btn btn-primary" onclick="saveAdminConfig()">Save setup</button>
+      <span id="savedFlash" class="muted" style="display:none; color:var(--mustard);">Saved.</span>
+      <button class="btn btn-ghost-dark" onclick="goHome()">Done</button>
+    </div>
+    <button class="btn btn-danger" onclick="doResetRatings()">Clear all ratings</button>
   </div>`;
     return html;
 }
@@ -537,9 +540,8 @@ function dashboardHtml() {
     });
     html += `</div>`;
 
-    html += `<div class="row">
-    <button class="btn btn-ghost-dark" onclick="goHome()">Back</button>
-    <button class="btn btn-danger" onclick="doResetRatings()">Clear all ratings</button>
+    html += `<div class="row" style="margin-top:12px;">
+    <button class="btn btn-ghost-light" onclick="goHome()">← Home</button>
   </div>`;
     return html;
 }
