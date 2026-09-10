@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Occasion Outfit Eval</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div id="app">Loading…</div>
+    <script src="script.js"></script>
+
+    <!--
+============================================================================
+SETUP — Google Sheets backend (one-time, ~10 minutes)
+============================================================================
+1. Create a new Google Sheet. Rename the first tab to exactly:  Config
+   Add a second tab named exactly:  Ratings
+
+2. In the Sheet, go to Extensions → Apps Script. Delete any starter code
+   and paste this:
+
+   -----------------------------------------------------------------------
+   const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE'; // from the sheet's URL
+   const CONFIG_SHEET = 'Config';
+   const RATINGS_SHEET = 'Ratings';
+
+   function doGet(e) {
+     const ss = SpreadsheetApp.openById(SHEET_ID);
+     const configSheet = ss.getSheetByName(CONFIG_SHEET);
+     const ratingsSheet = ss.getSheetByName(RATINGS_SHEET);
+     const configVal = configSheet.getRange(1, 1).getValue();
+     const ratingsData = ratingsSheet.getDataRange().getValues();
+     const ratings = ratingsData
+       .filter(function(row, i) { return i > 0 && row[0]; })
+       .map(function(row) { return JSON.parse(row[0]); });
+     return ContentService.createTextOutput(JSON.stringify({
+       config: configVal ? JSON.parse(configVal) : null,
+       ratings: ratings
+     })).setMimeType(ContentService.MimeType.JSON);
+   }
+
+   function doPost(e) {
+     const ss = SpreadsheetApp.openById(SHEET_ID);
+     const body = JSON.parse(e.postData.contents);
+
+     if (body.action === 'saveConfig') {
+       ss.getSheetByName(CONFIG_SHEET).getRange(1, 1).setValue(JSON.stringify(body.config));
+       return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+     }
+     if (body.action === 'addRating') {
+       ss.getSheetByName(RATINGS_SHEET).appendRow([JSON.stringify(body.rating)]);
+       return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+     }
+     if (body.action === 'resetRatings') {
+       const sheet = ss.getSheetByName(RATINGS_SHEET);
+       const lastRow = sheet.getLastRow();
+       if (lastRow > 1) sheet.getRange(2, 1, lastRow - 1, 1).clearContent();
+       return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+     }
+     return ContentService.createTextOutput(JSON.stringify({ ok: false, error: 'unknown action' })).setMimeType(ContentService.MimeType.JSON);
+   }
+   -----------------------------------------------------------------------
+
+3. Replace SHEET_ID with your sheet's ID (the long string in its URL
+   between /d/ and /edit).
+
+4. Click Deploy → New deployment → gear icon → Web app.
+   - Execute as: Me
+   - Who has access: Anyone
+   Click Deploy, authorize the permissions Google asks for, then copy
+   the Web app URL (it ends in /exec).
+
+5. Back in THIS file, paste that URL into API_URL near the top of
+   script.js, replacing "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE".
+
+6. Deploy this HTML file itself to Vercel/Netlify/GitHub Pages as a
+   static file, same as any plain HTML site.
+
+Notes:
+- Anyone with your deployed site's URL can submit ratings and edit the
+  Admin setup — there's no login. Fine for a small hiring-task eval with
+  8–10 known participants; don't use this pattern for anything sensitive.
+- Apps Script Web Apps can occasionally take a few seconds to "wake up"
+  on the first request after being idle — if a request seems to hang,
+  wait a moment and retry.
+============================================================================
+-->
+</body>
+
+</html>
