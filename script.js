@@ -162,8 +162,22 @@ function bannerHtml() {
     return STATE.error ? `<div class="banner">${escapeHtml(STATE.error)}</div>` : "";
 }
 
+function loadingHtml() {
+    return `
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <div style="font-family:'Bitter',serif; font-size:18px; font-weight:700; color:var(--chalk); margin-top:16px;">Loading evaluation data…</div>
+      <div class="muted" style="color:rgba(243,240,230,0.6); font-size:13px; margin-top:6px;">Connecting to backend</div>
+    </div>`;
+}
+
 function render() {
     const app = document.getElementById("app");
+    if (!STATE.ready) {
+        app.innerHTML = loadingHtml();
+        return;
+    }
+
     let body = "";
     if (STATE.view === "home") body = homeHtml();
     else if (STATE.view === "admin") body = adminHtml();
@@ -298,9 +312,9 @@ function adminHtml() {
     <div class="row">
       <button class="btn btn-primary" onclick="saveAdminConfig()">Save setup</button>
       <span id="savedFlash" class="muted" style="display:none; color:var(--mustard);">Saved.</span>
-      <button class="btn btn-ghost-dark" onclick="goHome()">Done</button>
+      <button class="btn btn-ghost-light" onclick="goHome()">Done</button>
     </div>
-    <button class="btn btn-danger" onclick="doResetRatings()">Clear all ratings</button>
+    <button class="btn btn-danger-light" onclick="doResetRatings()">Clear all ratings</button>
   </div>`;
     return html;
 }

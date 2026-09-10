@@ -13,7 +13,13 @@
 </head>
 
 <body>
-    <div id="app">Loading…</div>
+    <div id="app">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <div style="font-family:'Bitter',serif; font-size:18px; font-weight:700; color:var(--chalk); margin-top:16px;">Loading evaluation data…</div>
+            <div class="muted" style="color:rgba(243,240,230,0.6); font-size:13px; margin-top:6px;">Connecting to backend</div>
+        </div>
+    </div>
     <script src="/api/config.js"></script>
     <script src="script.js"></script>
 
