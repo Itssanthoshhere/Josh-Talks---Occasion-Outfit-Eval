@@ -15,8 +15,8 @@ const CRITERIA = [
 
 const DEFAULT_MODELS = [
     { id: "m1", company: "OpenAI", name: "GPT Image 1" },
-    { id: "m2", company: "Google", name: "Gemini 3.6 Flash Image" },
-    { id: "m3", company: "Google", name: "Gemini 3.5 Flash-Lite Image" },
+    { id: "m2", company: "Google", name: "Gemini 2.5 Flash Image" },
+    { id: "m3", company: "Google", name: "Gemini 3.1 Flash-Lite Image" },
 ];
 
 const DEFAULT_PROMPTS = [

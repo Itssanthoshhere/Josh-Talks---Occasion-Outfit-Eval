@@ -38,8 +38,8 @@ When generating fashion listings for the Indian market, generic AI models often 
 
 #### **Models Compared (3)**
 1. **OpenAI — GPT Image 1**
-2. **Google — Gemini 3.6 Flash Image**
-3. **Google — Gemini 3.5 Flash-Lite Image**
+2. **Google — Gemini 2.5 Flash Image**
+3. **Google — Gemini 3.1 Flash-Lite Image**
 
 #### **Occasion Prompts (5)**
 - **p1 (Medium)**: *Wedding Guest — Woman* (Formal Indian wedding guest outfit)
